@@ -4,8 +4,7 @@ const rooms = {};
 const chats = {};
 
 const roomHandler = (socket) => {
-  const createRoom = () => {
-    const roomId = uuidV4();
+  const createRoom = (roomId) => {
     rooms[roomId] = [];
     socket.emit("room-created", { roomId });
   };
@@ -13,11 +12,14 @@ const roomHandler = (socket) => {
   const joinRoom = ({ roomId, peerId, userName }) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
-
     socket.emit("get-messages", chats[roomId]);
+
     rooms[roomId][peerId] = { peerId, userName };
+
     socket.join(roomId);
+
     socket.to(roomId).emit("user-joined", { peerId, userName });
+
     socket.emit("get-users", {
       roomId,
       participants: rooms[roomId],
@@ -38,6 +40,7 @@ const roomHandler = (socket) => {
   const stopSharing = (roomId) => {
     socket.to(roomId).emit("user-stopped-sharing");
   };
+
   const addMessage = (roomId, message) => {
     if (chats[roomId]) {
       chats[roomId].push(message);
@@ -46,7 +49,6 @@ const roomHandler = (socket) => {
     }
     socket.to(roomId).emit("add-message", message);
   };
-
   socket.on("create-room", createRoom);
   socket.on("join-room", joinRoom);
   socket.on("start-sharing", startSharing);
