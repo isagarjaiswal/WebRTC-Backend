@@ -4,7 +4,11 @@ const rooms = {};
 const chats = {};
 
 const roomHandler = (socket) => {
+  console.log("roomHandler");
+
   const createRoom = (roomId) => {
+    console.log("room created", roomId);
+    console.log({ rooms });
     rooms[roomId] = [];
     socket.emit("room-created", { roomId });
   };
@@ -13,6 +17,8 @@ const roomHandler = (socket) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
     socket.emit("get-messages", chats[roomId]);
+
+    console.log("join room");
 
     rooms[roomId][peerId] = { peerId, userName };
 
@@ -32,16 +38,14 @@ const roomHandler = (socket) => {
   const leaveRoom = ({ peerId, roomId }) => {
     socket.to(roomId).emit("user-disconnected", peerId);
   };
-
   const startSharing = ({ peerId, roomId }) => {
     socket.to(roomId).emit("user-started-sharing", peerId);
   };
-
   const stopSharing = (roomId) => {
     socket.to(roomId).emit("user-stopped-sharing");
   };
-
   const addMessage = (roomId, message) => {
+    console.log("addmessag");
     if (chats[roomId]) {
       chats[roomId].push(message);
     } else {
