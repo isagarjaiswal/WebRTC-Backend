@@ -1,5 +1,3 @@
-const { v4: uuidV4 } = require("uuid");
-
 const rooms = {};
 const chats = {};
 
@@ -17,6 +15,8 @@ const roomHandler = (socket) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
     socket.emit("get-messages", chats[roomId]);
+    // socket.emit("get-messages", chats[roomId]);
+    // socket.broadcast.to(roomId).emit("get-messages", chats[roomId]);
 
     console.log("join room");
 
@@ -45,13 +45,19 @@ const roomHandler = (socket) => {
     socket.to(roomId).emit("user-stopped-sharing");
   };
   const addMessage = (roomId, message) => {
-    console.log("addmessag");
+    console.log("add message", { message });
+    console.log({ roomId });
+    console.log({ chats: chats[roomId] });
+
     if (chats[roomId]) {
+      console.log("under if", chats[roomId]);
       chats[roomId].push(message);
     } else {
+      console.log("under else", chats[roomId]);
+
       chats[roomId] = [message];
     }
-    socket.to(roomId).emit("add-message", message);
+    socket.broadcast.to(roomId).emit("add-message", message);
   };
   socket.on("create-room", createRoom);
   socket.on("join-room", joinRoom);
