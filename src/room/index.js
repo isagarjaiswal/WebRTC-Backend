@@ -1,4 +1,5 @@
-// import { v4 as uuidV4 } from "uuid";
+// import { v4 as uuidV4 } require("uuid");
+// const { v4: uuidV4 } = require("uuid");
 
 const rooms = {};
 const chats = {};
@@ -18,7 +19,9 @@ const roomHandler = (socket) => {
   const joinRoom = ({ roomId, peerId, userName }) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
+
     socket.emit("get-messages", chats[roomId]);
+
     rooms[roomId][peerId] = { peerId, userName };
 
     socket.join(roomId);
@@ -38,20 +41,23 @@ const roomHandler = (socket) => {
   const leaveRoom = ({ peerId, roomId }) => {
     socket.to(roomId).emit("user-disconnected", peerId);
   };
+
   const startSharing = ({ peerId, roomId }) => {
     socket.to(roomId).emit("user-started-sharing", peerId);
   };
+
   const stopSharing = (roomId) => {
     socket.to(roomId).emit("user-stopped-sharing");
   };
+
   const addMessage = (roomId, message) => {
-    console.log({ message, roomId });
+    console.log(roomId);
     if (chats[roomId]) {
       chats[roomId].push(message);
     } else {
       chats[roomId] = [message];
     }
-    socket.broadcast.to(roomId).emit("add-message", message);
+    socket.to(roomId).emit("add-message", message);
   };
 
   const changeName = ({ peerId, userName, roomId }) => {
@@ -60,6 +66,7 @@ const roomHandler = (socket) => {
       socket.to(roomId).emit("name-changed", { peerId, userName });
     }
   };
+
   socket.on("create-room", createRoom);
   socket.on("join-room", joinRoom);
   socket.on("start-sharing", startSharing);
