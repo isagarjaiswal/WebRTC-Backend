@@ -1,3 +1,4 @@
+import { Socket } from "socket.io";
 import { v4 as uuidV4 } from "uuid";
 
 const rooms = {};
