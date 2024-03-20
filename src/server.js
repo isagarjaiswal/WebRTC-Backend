@@ -6,6 +6,10 @@ const { roomHandler } = require("./room/index");
 
 const app = express();
 
+// app.get("/health", (_, res) => {
+//   res.send("Server is running");
+// });
+
 app.use(cors());
 const port = 8080;
 const server = http.createServer(app);
