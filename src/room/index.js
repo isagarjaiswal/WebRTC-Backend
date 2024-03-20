@@ -1,16 +1,8 @@
-// import { v4 as uuidV4 } require("uuid");
-// const { v4: uuidV4 } = require("uuid");
-
 const rooms = {};
 const chats = {};
 
 const roomHandler = (socket) => {
-  // const createRoom = (roomId) => {
-  //   rooms[roomId] = [];
-  //   socket.emit("room-created", { roomId });
-  // };
-  const createRoom = (roomId) => {
-    // const roomId = uuidV4();
+  const createRoom = ({ roomId }) => {
     rooms[roomId] = {};
     socket.emit("room-created", { roomId });
     console.log("user created the room");
