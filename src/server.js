@@ -23,6 +23,7 @@ io.on("connection", (socket) => {
     console.log("User is disconnected");
   });
 });
+io.setMaxListeners(15);
 
 server.listen(port, () => {
   console.log(`listening port on :${port}`);
