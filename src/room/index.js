@@ -1,21 +1,24 @@
-import { Socket } from "socket.io";
-import { v4 as uuidV4 } from "uuid";
+// import { Socket } from "socket.io";
+// import { v4 as uuidV4 } from "uuid";
 
 const rooms = {};
 const chats = {};
 
 export const roomHandler = (socket) => {
-  const createRoom = () => {
-    const roomId = uuidV4();
+  // const createRoom = () => {
+  //   const roomId = uuidV4();
+  //   rooms[roomId] = {};
+  //   socket.emit("room-created", { roomId });
+  //   console.log("user created the room");
+  //   console.log(rooms);
+  // };
+
+  const createRoom = ({ roomId }) => {
     rooms[roomId] = {};
     socket.emit("room-created", { roomId });
     console.log("user created the room");
   };
-  // const createRoom = ({ roomId }) => {
-  //   rooms[roomId] = {};
-  //   socket.emit("room-created", { roomId });
-  //   console.log("user created the room");
-  // };
+
   const joinRoom = ({ roomId, peerId, userName }) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
